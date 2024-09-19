@@ -80,8 +80,25 @@ public class KafkaConsumerService {
     }
 
     public void consumeWithProcessor(KafkaConsumerService.MessageProcessor processor, CountDownLatch latch) {
-        Thread consumerThread = new Thread(() -> consumeMessages(processor, 5000, latch));
+        Thread consumerThread = new Thread(() -> {
+            try {
+                consumeMessages(processor, 5000, latch);
+            } finally {
+                latch.countDown();
+            }
+        });
         consumerThread.start();
+        try {
+            latch.await(); // Ожидание завершения
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        // Освобождаем ресурсы
+        try {
+            consumerThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void close() {
