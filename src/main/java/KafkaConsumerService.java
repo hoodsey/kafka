@@ -36,17 +36,15 @@ public class KafkaConsumerService {
 
         consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Collections.singletonList(topic));
-        logger.info("KafkaConsumerService initialized for topic: {}", topic);
+        logger.info("KafkaConsumerService  инициализация для топика: {}", topic);
     }
 
     public void consumeMessages(MessageProcessor processor, long waitTime, CountDownLatch latch) {
         try {
-            // Указываем, какие топики будем слушать
             consumer.subscribe(Collections.singletonList(topic));
 
             long endTime = System.currentTimeMillis() + waitTime;
             while (System.currentTimeMillis() < endTime) {
-                // Пытаемся получить сообщения из Kafka
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
                     processor.process(record);
@@ -56,7 +54,6 @@ public class KafkaConsumerService {
                 }
             }
         } catch (Exception e) {
-            // Логируем или обрабатываем исключения
             e.printStackTrace();
         } finally {
             consumer.close();
@@ -90,9 +87,9 @@ public class KafkaConsumerService {
     public void close() {
         try {
             consumer.close();
-            logger.info("KafkaConsumerService closed for topic: {}", topic);
+            logger.info("KafkaConsumer закрытие для топика: {}", topic);
         } catch (Exception e) {
-            logger.error("Error while closing KafkaConsumerService", e);
+            logger.error("Ошибка при закрытии KafkaConsumerService", e);
         }
     }
 

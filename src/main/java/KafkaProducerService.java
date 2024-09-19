@@ -25,9 +25,9 @@ public class KafkaProducerService {
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
         producer.send(record, (RecordMetadata metadata, Exception exception) -> {
             if (exception != null) {
-                logger.error("Error sending message with key '{}':", key, exception);
+                logger.error("Ошибка отправки с ключом '{}':", key, exception);
             } else {
-                logger.info("Message sent successfully to topic '{}', partition {}, offset {}",
+                logger.info("Успешная отправка для топика '{}', раздела {}, смещение сообщения {}",
                         metadata.topic(), metadata.partition(), metadata.offset());
             }
         });
@@ -47,6 +47,6 @@ public class KafkaProducerService {
 
     public void close() {
         producer.close();
-        logger.info("Kafka producer closed.");
+        logger.info("Kafka producer закрыт.");
     }
 }

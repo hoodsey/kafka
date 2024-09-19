@@ -36,7 +36,7 @@ class KafkaConsumerServiceTest extends BaseTest {
         kafkaProducerService.sendMessage(null, expectedMessage);
         kafkaConsumerService.consumeWithProcessor(processor, latch);
         boolean processed = latch.await(5, TimeUnit.SECONDS);
-        assertTrue(processed, "Timeout waiting for message to be processed");
+        assertTrue(processed, "Сообщение не было обработано за отведенное время");
     }
 
     @Test
@@ -49,7 +49,7 @@ class KafkaConsumerServiceTest extends BaseTest {
         }
         kafkaConsumerService.consumeMultipleMessages(messages.length, latch);
         boolean processed = latch.await(5, TimeUnit.SECONDS);
-        assertTrue(processed, "Timeout waiting for all messages to be processed");
+        assertTrue(processed, "Сообщения не были обработаны за отведенное время");
     }
 
     @Test
@@ -58,7 +58,7 @@ class KafkaConsumerServiceTest extends BaseTest {
         String nonExistentTopic = "non-existent-topic";
         KafkaConsumerService consumerService = new KafkaConsumerService(kafkaContainer.getBootstrapServers(), nonExistentTopic, 1000);
         String consumedMessage = consumerService.consumeSingleMessage();
-        Assertions.assertNull(consumedMessage, "Expected no messages to be consumed from a non-existent topic");
+        Assertions.assertNull(consumedMessage, "Expected no Ожидалось, что сообщения из несуществующей темы не будут использованы");
     }
 
     @Test
@@ -73,6 +73,6 @@ class KafkaConsumerServiceTest extends BaseTest {
         }, 5000, latch));
         consumerThread.start();
         boolean processed = latch.await(10, TimeUnit.SECONDS);
-        assertTrue(processed, "Timeout waiting for delayed message to be processed");
+        assertTrue(processed, "Отложенное сообщение не было обработано за отведенное время");
     }
 }
