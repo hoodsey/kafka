@@ -73,7 +73,25 @@ public class KafkaConsumerService {
 
     public void consumeMultipleMessages(int count, CountDownLatch latch) {
         new Thread(() -> {
-            for (int i = 0; i < count; i++) {
+            try {
+                while (true) {
+                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(pollTimeout));
+                    if (!records.isEmpty()) {
+                        int consumedRecords = 0;
+                        for (ConsumerRecord<String, String> record : records) {
+                            logger.info("Сообщение: {}", record.value());
+                            ++consumedRecords;
+                        }
+                        if (consumedRecords >= count) {
+                            break;
+                        }
+                    } else {
+                        logger.info("Сообщения не потребляются; записи пусты");
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Ошибка при потреблении сообщений: ", e);
+            } finally {
                 latch.countDown();
             }
         }).start();

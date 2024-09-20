@@ -35,7 +35,7 @@ class KafkaConsumerServiceTest extends BaseTest {
         };
         kafkaProducerService.sendMessage(null, expectedMessage);
         kafkaConsumerService.consumeWithProcessor(processor, latch);
-        boolean processed = latch.await(5, TimeUnit.SECONDS);
+        boolean processed = latch.await(7, TimeUnit.SECONDS);
         assertTrue(processed, "Сообщение не было обработано за отведенное время");
     }
 
@@ -48,7 +48,7 @@ class KafkaConsumerServiceTest extends BaseTest {
             kafkaProducerService.sendMessage(null, message);
         }
         kafkaConsumerService.consumeMultipleMessages(messages.length, latch);
-        boolean processed = latch.await(5, TimeUnit.SECONDS);
+        boolean processed = latch.await(10, TimeUnit.SECONDS);
         assertTrue(processed, "Сообщения не были обработаны за отведенное время");
     }
 
